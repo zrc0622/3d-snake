@@ -7,6 +7,7 @@ class Snake:
         self.grow = False
         self.speed = 0.1  # 初始速度为0.1
         self.growth_distance = 2.0  # 每次增长的距离
+        self.waiting_num = 0 # 待增长的块
 
     def move(self):
         head_x, head_y, head_z = self.positions[0]
@@ -27,22 +28,22 @@ class Snake:
         head = self.positions[0]
         return head in self.positions[1:]
 
-    def grow_snake(self):
-        tail_end = self.positions[-1]
-        if len(self.positions) > 1:
-            tail_direction_x = self.positions[-1][0] - self.positions[-2][0]
-            tail_direction_y = self.positions[-1][1] - self.positions[-2][1]
-        else:
-            tail_direction_x = -math.cos(math.radians(self.angle))
-            tail_direction_y = -math.sin(math.radians(self.angle))
+    def grow_snake(self, segments=10):
+        for _ in range(segments):  # 新增多个部分
+            tail_end = self.positions[-1]
+            if len(self.positions) > 1:
+                tail_direction_x = self.positions[-1][0] - self.positions[-2][0]
+                tail_direction_y = self.positions[-1][1] - self.positions[-2][1]
+            else:
+                tail_direction_x = -math.cos(math.radians(self.angle))
+                tail_direction_y = -math.sin(math.radians(self.angle))
 
-        new_part_x = tail_end[0] - tail_direction_x * self.growth_distance
-        new_part_y = tail_end[1] - tail_direction_y * self.growth_distance
-        new_part_z = tail_end[2]
+            new_part_x = tail_end[0] - tail_direction_x * self.growth_distance
+            new_part_y = tail_end[1] - tail_direction_y * self.growth_distance
+            new_part_z = tail_end[2]
 
-        new_part = (new_part_x, new_part_y, new_part_z)
-        self.positions.append(new_part)
-        self.grow = False
+            new_part = (new_part_x, new_part_y, new_part_z)
+            self.positions.append(new_part)
 
     def head_position(self):
         return self.positions[0]

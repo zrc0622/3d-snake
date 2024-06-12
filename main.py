@@ -17,6 +17,7 @@ glTranslatef(0.0, 1.7, -28)
 glRotatef(-45, 1, 0, 0)
 light_position = [-2.0, -2.0, 10.0, 1.0]    # 光源位置
 init_lighting(light_position)  # 初始化光源
+segments = 10 # 蛇身体之间的间隔
 
 # 材质
 snake_texture = load_texture("texture/snake.png")   # 蛇的材质
@@ -46,7 +47,7 @@ while True:
     snake.move()
 
     if check_food_collision(snake.head_position(), food.position):
-        snake.grow = True  # 设置增长标志
+        snake.grow_snake(segments)  # 设置增长标志
         food.respawn()
 
     if snake.check_collision():
@@ -63,7 +64,6 @@ while True:
     # draw_shadow(food.position, light_position)
     
     # 绘制蛇
-    spacing_factor = 15.0  # 间隔系数，可以根据你的游戏设计调整，但在此逻辑中不再需要
     adjusted_positions = [snake.positions[0]]  # 初始化调整后的位置列表，包含蛇头位置
 
     # 更新每个身体部分的位置
@@ -72,9 +72,13 @@ while True:
         adjusted_positions.append(snake.positions[i - 1])
 
     # 绘制蛇的每个身体部分
-    for pos in adjusted_positions:
-        # 绘制每个蛇身节
-        draw_cube_with_texture(pos, (1, 1, 1), snake_texture)
+    # 绘制蛇
+    for index, pos in enumerate(snake.positions):
+        if index % 10 == 0:  # 检查索引是否是10的倍数
+            draw_cube_with_texture(pos, (1, 1, 1), snake_texture)
+        else:
+            continue
+
 
     # 绘制食物
     draw_cube(food.position, (1, 0, 0))
