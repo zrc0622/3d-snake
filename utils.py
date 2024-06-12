@@ -1,5 +1,6 @@
 import math
 import pygame
+from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
@@ -32,7 +33,7 @@ def load_texture(image_path):
 
     return texture
 
-def set_material_specular(reflectivity, shininess): # 对镜面光的反射程度和材料光泽度
+def set_material_specular(reflectivity, shininess): # 对镜面光的反射程度和
     # 设置材料的镜面反射颜色和反射率
     specular_material = [reflectivity, reflectivity, reflectivity, 1.0]
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular_material)
@@ -40,3 +41,42 @@ def set_material_specular(reflectivity, shininess): # 对镜面光的反射程�
     # 设置材料的光泽度
     glMaterialf(GL_FRONT, GL_SHININESS, shininess)
 
+
+def render_text(text, display, font, color=(255, 255, 255)):
+    # 渲染文本为表面
+    text_surface = font.render(text, True, color)
+    text_data = pygame.image.tostring(text_surface, "RGBA", True)
+    width, height = text_surface.get_width(), text_surface.get_height()
+
+    # 计算文本起始位置以使其居中
+    x = (display[0] - width) // 2
+    y = (display[1] - height) // 2
+
+    # 切换到投影矩阵
+    glMatrixMode(GL_PROJECTION)
+    glPushMatrix()
+    glLoadIdentity()
+    gluOrtho2D(0, display[0], 0, display[1])
+    
+    # 切换到模型视图矩阵
+    glMatrixMode(GL_MODELVIEW)
+    glPushMatrix()
+    glLoadIdentity()
+
+    # 禁用深度测试和纹理
+    glDisable(GL_DEPTH_TEST)
+    glDisable(GL_TEXTURE_2D)
+
+    # 设置文本位置
+    glRasterPos2i(x, display[1] - y - height)
+    
+    # 渲染文本
+    glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, text_data)
+
+    # 恢复之前的矩阵和状态
+    glEnable(GL_DEPTH_TEST)
+    glEnable(GL_TEXTURE_2D)
+    glMatrixMode(GL_PROJECTION)
+    glPopMatrix()
+    glMatrixMode(GL_MODELVIEW)
+    glPopMatrix()
