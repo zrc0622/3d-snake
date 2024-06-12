@@ -3,10 +3,12 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from utils import check_food_collision, load_texture, set_material_specular, render_text
+from utils import check_food_collision, load_texture, set_material_specular, render_text, menu
 from snake import Snake
 from food import Food
 from environment import draw_plane, draw_plane_with_texture, draw_cube, draw_cube_with_texture, init_lighting, draw_shadow, draw_cube_with_texture2
+
+speed = menu()
 
 '''游戏初始化'''
 # 游戏状态
@@ -14,6 +16,7 @@ START = 0
 RUNNING = 1
 PAUSED = 2
 GAME_OVER = 3
+QUIT = 4
 game_state = START
 
 # 场景初始化
@@ -44,7 +47,7 @@ rotation_angle = start_angle # 初始食物旋转角度
 """游戏设置"""
 # 难度设置
 segments = 15 # 每吃一个食物增长的长度
-speed = 0.10 # 初始速度
+# speed = 0.10 # 初始速度
 collision_threshold = 0.1 # 碰撞阈值
 
 # 游戏设置
@@ -78,6 +81,10 @@ while True:
             elif event.key == pygame.K_s:
                 if game_state == START:
                     game_state = RUNNING
+            elif event.key == pygame.K_q:
+                print("\n欢迎下次游玩!")
+                pygame.quit()
+                quit()
 
     keys = pygame.key.get_pressed()
     if game_state == RUNNING:

@@ -80,3 +80,32 @@ def render_text(text, display, font, color=(255, 255, 255)):
     glPopMatrix()
     glMatrixMode(GL_MODELVIEW)
     glPopMatrix()
+
+def menu():
+    print("┌────────────────────────────────┐")
+    print("│ 欢迎来到3D贪吃蛇               │")
+    print("├────────────────────────────────┤")
+    print("│ 操作提示                       │")
+    print("│   [s]       开始游戏           │")
+    print("│   [r]       重新游戏           │")
+    print("│   [q]       退出游戏           │")
+    print("│   [p]       暂停/继续游戏      │")
+    print("│   [left]    逆时针旋转         │")
+    print("│   [right]   顺时针旋转         │")
+    print("├────────────────────────────────┤")
+    print("│ 难度选择                       │")
+    print("│   [1]       简单               │")
+    print("│   [2]       中等               │")
+    print("│   [3]       困难               │")
+    print("└────────────────────────────────┘")
+
+    while True:
+        choice = input("请输入您的选择：").lower()
+        if choice in ['1', '2', '3']:
+            global speed
+            speed_levels = {'1': 0.10, '2': 0.15, '3': 0.2}
+            speed = speed_levels[choice]
+            print(f"\n您已选择 {'简单' if choice == '1' else '中等' if choice == '2' else '困难'} 难度。\n")
+            return speed
+        else:
+            print("\n无效输入，请重新输入！\n")
