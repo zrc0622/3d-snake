@@ -176,3 +176,47 @@ def draw_cube_with_texture(position, color, texture, head = False):
 
 
 
+def draw_cube_with_texture2(position, color, texture):
+    glBindTexture(GL_TEXTURE_2D, texture)  # 绑定纹理
+    glEnable(GL_TEXTURE_2D)  # 启用二维纹理
+
+    x, y, z = position
+    # 定义立方体的顶点
+    vertices = [
+        (x + 0.5, y - 0.5, z - 0.5),
+        (x + 0.5, y + 0.5, z - 0.5),
+        (x - 0.5, y + 0.5, z - 0.5),
+        (x - 0.5, y - 0.5, z - 0.5),
+        (x + 0.5, y - 0.5, z + 0.5),
+        (x + 0.5, y + 0.5, z + 0.5),
+        (x - 0.5, y - 0.5, z + 0.5),
+        (x - 0.5, y + 0.5, z + 0.5),
+    ]
+
+    faces = [
+        (0, 1, 2, 3),  # 前面
+        (1, 5, 7, 2),  # 右面
+        (3, 2, 7, 6),  # 后面
+        (4, 5, 1, 0),  # 左面
+        (4, 0, 3, 6),  # 底面 
+        (6, 7, 5, 4),  # 顶面
+        
+    ]
+
+    # 为每个面定义纹理坐标
+    tex_coords_face = [
+        (0, 0), (1, 0), (1, 1), (0, 1)  # 纹理坐标正确的顺序
+    ]
+
+    # 设置镜面反射属性
+    set_material_specular(1, 100)
+    # 渲染立方体的每个面
+    for face in faces:
+        glBegin(GL_QUADS)
+        glColor3fv(color)  # 设置颜色
+        for i, vertex in enumerate(face):
+            glTexCoord2fv(tex_coords_face[i])  # 为每个顶点指定纹理坐标
+            glVertex3fv(vertices[vertex])  # 定义顶点位置
+        glEnd()
+
+    glDisable(GL_TEXTURE_2D)  # 禁用二维纹理

@@ -6,7 +6,7 @@ from OpenGL.GLU import *
 from utils import check_food_collision, load_texture, set_material_specular
 from snake import Snake
 from food import Food
-from environment import draw_plane, draw_plane_with_texture, draw_cube, draw_cube_with_texture, init_lighting, draw_shadow
+from environment import draw_plane, draw_plane_with_texture, draw_cube, draw_cube_with_texture, init_lighting, draw_shadow, draw_cube_with_texture2
 
 '''游戏初始化'''
 # 场景初始化
@@ -18,7 +18,7 @@ glTranslatef(0, 5, -50) # 移动场景(x,y,z)
 glRotatef(-40, 1, 0, 0) # 旋转场景
 
 # 光源初始化
-light_position = [20.0, -20.0, 20.0, 1.0]    # 光源位置
+light_position = [20.0, -20.0, 15.0, 1.0]    # 光源位置
 init_lighting(light_position)  # 初始化光源
 
 # 难度设置
@@ -31,6 +31,10 @@ snake_texture = load_texture("texture/snake1.png")   # 蛇的材质
 snake_head_texture = load_texture("texture/snake2.png")   # 蛇的材质
 plane_texture = load_texture("texture/grass.png")   # 平台材质
 food_texture = load_texture("texture/food.png")   # 平台材质
+
+# 其它初始化
+start_angle = -45
+rotation_angle = start_angle # 初始食物旋转角度
 
 # 主循环
 snake = Snake(speed)
@@ -74,6 +78,9 @@ while True:
     #     draw_shadow(pos, light_position)
     # draw_shadow(food.position, light_position)
     
+    """
+    渲染部分
+    """
     # 绘制蛇
     adjusted_positions = [snake.positions[0]]  # 初始化调整后的位置列表，包含蛇头位置
 
@@ -94,7 +101,15 @@ while True:
             continue
 
     # 绘制食物
-    draw_cube_with_texture(food.position, (1, 1, 1), food_texture)
+    glPushMatrix()
+    glTranslatef(*food.position)  # 将食物方块移动到其位置
+    glRotatef(rotation_angle, 0, 0, 1)  # 绕Z轴旋转（中轴线）
+    draw_cube_with_texture2((0, 0, 0), (1.0, 1.0, 1.0), food_texture)  # 以原点为中心绘制食物方块
+    glPopMatrix()
+
+    rotation_angle += 1  # 更新旋转角度
+    if rotation_angle >= start_angle + 90:
+        rotation_angle = start_angle  # 防止角度过大
     
     pygame.display.flip()
     clock.tick(90)  # 调节帧率
