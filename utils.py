@@ -25,5 +25,18 @@ def load_texture(image_path):
 
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    
+    # 添加纹理重复和边缘处理参数
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
 
     return texture
+
+def set_material_specular(reflectivity, shininess): # 对镜面光的反射程度和材料光泽度
+    # 设置材料的镜面反射颜色和反射率
+    specular_material = [reflectivity, reflectivity, reflectivity, 1.0]
+    glMaterialfv(GL_FRONT, GL_SPECULAR, specular_material)
+    
+    # 设置材料的光泽度
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess)
+

@@ -1,11 +1,11 @@
 import math
 
 class Snake:
-    def __init__(self):
+    def __init__(self, speed):
         self.positions = [(0, 0, 0)]
         self.angle = 0  # 初始角度为0度
         self.grow = False
-        self.speed = 0.1  # 初始速度为0.1
+        self.speed = speed  # 初始速度为0.1
         self.growth_distance = 2.0  # 每次增长的距离
         self.waiting_num = 0 # 待增长的块
 
@@ -24,12 +24,26 @@ class Snake:
     def change_angle(self, delta_angle):
         self.angle = (self.angle + delta_angle) % 360
 
-    def check_collision(self):
-        head = self.positions[0]
-        return head in self.positions[1:]
+    def check_collision(self, collision_threshold):
+        head_x, head_y, head_z = self.positions[0]
+        # 设置一个碰撞阈值，例如0.1个单位距离
+        for x, y, z in self.positions[5:]:
+            distance = math.sqrt((head_x - x)**2 + (head_y - y)**2 + (head_z - z)**2)
+            if distance < collision_threshold:
+                return True
+        return False
+    
+    def check_boundary_collision(self, boundary=(-20, 20)):
+        x, y, z = self.positions[0]
+        min_boundary, max_boundary = boundary
+        if (x < min_boundary or x > max_boundary or
+            y < min_boundary or y > max_boundary or
+            z < min_boundary or z > max_boundary):
+            return True
+        return False
 
-    def grow_snake(self, segments=10):
-        for _ in range(segments):  # 新增多个部分
+    def grow_snake(self):
+        if self.waiting_num > 0:
             tail_end = self.positions[-1]
             if len(self.positions) > 1:
                 tail_direction_x = self.positions[-1][0] - self.positions[-2][0]
@@ -44,6 +58,8 @@ class Snake:
 
             new_part = (new_part_x, new_part_y, new_part_z)
             self.positions.append(new_part)
+            
+            self.waiting_num -= 1
 
     def head_position(self):
         return self.positions[0]

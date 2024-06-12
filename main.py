@@ -3,28 +3,37 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from utils import check_food_collision, load_texture
+from utils import check_food_collision, load_texture, set_material_specular
 from snake import Snake
 from food import Food
 from environment import draw_plane, draw_plane_with_texture, draw_cube, draw_cube_with_texture, init_lighting, draw_shadow
 
-# 初始化游戏
+'''游戏初始化'''
+# 场景初始化
 pygame.init()
-display = (1600, 1200)
-pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
-glTranslatef(0.0, 1.7, -28)
-glRotatef(-45, 1, 0, 0)
-light_position = [-2.0, -2.0, 10.0, 1.0]    # 光源位置
-init_lighting(light_position)  # 初始化光源
-segments = 10 # 蛇身体之间的间隔
+display = (1600, 1200)  # 窗口分辨率
+pygame.display.set_mode(display, DOUBLEBUF | OPENGL) # 启动OpenGL渲染
+gluPerspective(50, (display[0] / display[1]), 0.1, 100.0) # 摄像机视角: 视野角度（距离）、宽高比、近距离不裁剪、远距离不裁剪
+glTranslatef(0, 5, -50) # 移动场景(x,y,z)
+glRotatef(-40, 1, 0, 0) # 旋转场景
 
-# 材质
-snake_texture = load_texture("texture/snake.png")   # 蛇的材质
-plane_texture = load_texture("texture/grass.png")
+# 光源初始化
+light_position = [20.0, -20.0, 20.0, 1.0]    # 光源位置
+init_lighting(light_position)  # 初始化光源
+
+# 难度设置
+segments = 15 # 每吃一个食物增长的长度
+speed = 0.10 # 初始速度
+collision_threshold = 0.1 # 碰撞阈值
+
+# 材质初始化
+snake_texture = load_texture("texture/snake1.png")   # 蛇的材质
+snake_head_texture = load_texture("texture/snake2.png")   # 蛇的材质
+plane_texture = load_texture("texture/grass.png")   # 平台材质
+food_texture = load_texture("texture/food.png")   # 平台材质
 
 # 主循环
-snake = Snake()
+snake = Snake(speed)
 food = Food()
 clock = pygame.time.Clock()
 
@@ -45,18 +54,20 @@ while True:
         snake.change_angle(-5)  # 顺时针旋转5度
 
     snake.move()
+    snake.grow_snake()  # 增长标志
 
-    if check_food_collision(snake.head_position(), food.position):
-        snake.grow_snake(segments)  # 设置增长标志
-        food.respawn()
-
-    if snake.check_collision():
+    if snake.check_collision(collision_threshold) or snake.check_boundary_collision():
         print("Game Over!")
         pygame.quit()
         quit()
 
+    if check_food_collision(snake.head_position(), food.position):
+        snake.waiting_num += segments
+        food.respawn()
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     draw_plane_with_texture(plane_texture)
+    # draw_plane()
     
     # # 绘制影子
     # for pos in snake.positions:
@@ -74,14 +85,16 @@ while True:
     # 绘制蛇的每个身体部分
     # 绘制蛇
     for index, pos in enumerate(snake.positions):
-        if index % 10 == 0:  # 检查索引是否是10的倍数
-            draw_cube_with_texture(pos, (1, 1, 1), snake_texture)
+        if index % segments == 0:  # 检查索引是否是10的倍数
+            if index == 0:
+                draw_cube_with_texture(pos, (1, 1, 1), snake_head_texture, True)
+            else:
+                draw_cube_with_texture(pos, (1, 1, 1), snake_texture)
         else:
             continue
 
-
     # 绘制食物
-    draw_cube(food.position, (1, 0, 0))
+    draw_cube_with_texture(food.position, (1, 1, 1), food_texture)
     
     pygame.display.flip()
-    clock.tick(60)  # 调节帧率
+    clock.tick(90)  # 调节帧率

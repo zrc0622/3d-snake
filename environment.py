@@ -2,25 +2,32 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 import numpy as np
 import pygame
+from utils import *
 
 def init_lighting(light_position):
-    """
-    初始化光源
-    """
     glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
 
-    ambient_light = [0.2, 0.2, 0.2, 1.0]    # 环境光
-    diffuse_light = [0.8, 0.8, 0.8, 1.0]    # 散射光
-    specular_light = [2.0, 2.0, 2.0, 1.0]   # 镜面光
+    # 设置光源参数
+    ambient_light = [0.5, 0.5, 0.5, 1.0]  # 环境光
+    diffuse_light = [0.8, 0.8, 0.8, 1.0]  # 散射光
+    specular_light = [1, 1, 1, 1.0]  # 镜面光
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light)
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light)
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light)
     glLightfv(GL_LIGHT0, GL_POSITION, light_position)
 
+    # 设置光源的衰减参数
+    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0)  # 常数衰减
+    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.05)  # 线性衰减
+    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.16)  # 平方衰减
+
+    # 启用颜色追踪
     glEnable(GL_COLOR_MATERIAL)
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
+
+
 
 # 绘制平面
 def draw_plane():
@@ -37,15 +44,24 @@ def draw_plane_with_texture(texture):
     glBindTexture(GL_TEXTURE_2D, texture)  # 绑定纹理
     glEnable(GL_TEXTURE_2D)  # 启用二维纹理
 
+    # 启用颜色材料
+    glEnable(GL_COLOR_MATERIAL)
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
+    glColor3fv((1, 1, 1))  # 设置颜色为白色，不过通常镜面反射颜色不受此影响
+    
+    # 设置镜面反射属性
+    set_material_specular(1, 128)
+
     glBegin(GL_QUADS)  # 开始绘制四边形
-    glColor3fv((1.0, 1.0, 1.0))  # 设置颜色为白色（纹理的颜色影响）
-    glTexCoord2f(0.0, 0.0); glVertex3fv((-20, -20, 0))  # 第一个顶点和纹理坐标
-    glTexCoord2f(1.0, 0.0); glVertex3fv((20, -20, 0))  # 第二个顶点和纹理坐标
-    glTexCoord2f(1.0, 1.0); glVertex3fv((20, 20, 0))  # 第三个顶点和纹理坐标
-    glTexCoord2f(0.0, 1.0); glVertex3fv((-20, 20, 0))  # 第四个顶点和纹理坐标
+    glTexCoord2f(0.0, 0.0); glVertex3fv((-20, -20, 0))
+    glTexCoord2f(1.0, 0.0); glVertex3fv((20, -20, 0))
+    glTexCoord2f(1.0, 1.0); glVertex3fv((20, 20, 0))
+    glTexCoord2f(0.0, 1.0); glVertex3fv((-20, 20, 0))
     glEnd()  # 结束绘制
 
     glDisable(GL_TEXTURE_2D)  # 禁用二维纹理
+    glDisable(GL_COLOR_MATERIAL)  # 禁用颜色材料
+
 
 # 绘制影子
 def draw_shadow(position, light_position):
@@ -102,7 +118,7 @@ def draw_cube(position, color):
     glEnd()
 
 # 绘制带有纹理的方块
-def draw_cube_with_texture(position, color, texture):
+def draw_cube_with_texture(position, color, texture, head = False):
     glBindTexture(GL_TEXTURE_2D, texture)  # 绑定纹理
     glEnable(GL_TEXTURE_2D)  # 启用二维纹理
 
@@ -119,6 +135,18 @@ def draw_cube_with_texture(position, color, texture):
         (x - 0.5, y + 0.5, z + 0.5),
     ]
 
+    if head:
+        vertices = [
+        (x + 0.6, y - 0.6, z - 0.6),
+        (x + 0.6, y + 0.6, z - 0.6),
+        (x - 0.6, y + 0.6, z - 0.6),
+        (x - 0.6, y - 0.6, z - 0.6),
+        (x + 0.6, y - 0.6, z + 0.6),
+        (x + 0.6, y + 0.6, z + 0.6),
+        (x - 0.6, y - 0.6, z + 0.6),
+        (x - 0.6, y + 0.6, z + 0.6),
+    ]
+
     faces = [
         (0, 1, 2, 3),  # 前面
         (1, 5, 7, 2),  # 右面
@@ -133,6 +161,8 @@ def draw_cube_with_texture(position, color, texture):
         (0, 0), (1, 0), (1, 1), (0, 1)  # 纹理坐标正确的顺序
     ]
 
+    # 设置镜面反射属性
+    set_material_specular(1, 100)
     # 渲染立方体的每个面
     for face in faces:
         glBegin(GL_QUADS)
