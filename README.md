@@ -2,9 +2,9 @@
 
 哈工大2024春《图形学与虚拟现实》课程大作业，使用Python和Pygame开发
 <div style="display: flex; justify-content: space-around;">
-  <img src="./images/1.png" alt="Image 1" height="200" style="margin: 10px;">
-  <img src="./images/2.png" alt="Image 2" height="200" style="margin: 10px;">
-  <img src="./images/3.png" alt="Image 3" height="200" style="margin: 10px;">
+  <img src="./images/1.png" alt="Image 1" height="190" style="margin: 10px;">
+  <img src="./images/2.png" alt="Image 2" height="190" style="margin: 10px;">
+  <img src="./images/3.png" alt="Image 3" height="190" style="margin: 10px;">
 </div>
 
 ## 文件结构
