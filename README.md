@@ -1,10 +1,24 @@
 # 3D贪吃蛇小游戏
 
 哈工大2024春《图形学与虚拟现实》课程大作业，使用Python和Pygame开发
-<div style="display: flex; justify-content: space-around;">
-  <img src="./images/1.png" alt="Image 1" style="width: 32%; margin: 10px;">
-  <img src="./images/2.png" alt="Image 2" style="width: 32%; margin: 10px;">
-  <img src="./images/3.png" alt="Image 3" style="width: 32%; margin: 10px;">
+<style>
+  .image-container {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .image-container img {
+    max-width: 32%; /* Ensure images do not exceed the specified width */
+    max-height: 200px; /* Set a maximum height to ensure equal height */
+    margin: 10px;
+    height: auto; /* Maintain the aspect ratio */
+  }
+</style>
+
+<div class="image-container">
+  <img src="./images/1.png" alt="Image 1">
+  <img src="./images/2.png" alt="Image 2">
+  <img src="./images/3.png" alt="Image 3">
 </div>
 
 ## 文件结构
