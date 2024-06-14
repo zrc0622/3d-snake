@@ -14,7 +14,7 @@
 在运行游戏之前，请确保已安装以下依赖：
 
 ```bash
-pip install pygame PyOpenGL
+pip install pygame PyOpenGL numpy
 ```
 
 ## 运行游戏

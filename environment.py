@@ -1,7 +1,6 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 import numpy as np
-import pygame
 from utils import *
 
 def init_lighting(light_position):
