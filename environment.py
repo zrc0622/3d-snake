@@ -21,7 +21,7 @@ def init_lighting(light_position):
     # 设置光源的衰减参数
     glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0)  # 常数衰减
     glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.05)  # 线性衰减
-    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.16)  # 平方衰减
+    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.3)  # 平方衰减
 
     # 启用颜色追踪
     glEnable(GL_COLOR_MATERIAL) # 启用颜色材料
