@@ -9,7 +9,7 @@
 
   .image-container img {
     max-width: 32%; /* Ensure images do not exceed the specified width */
-    max-height: 100px; /* Set a maximum height to ensure equal height */
+    max-height: 80px; /* Set a maximum height to ensure equal height */
     margin: 10px;
     height: auto; /* Maintain the aspect ratio */
   }
